@@ -1,4 +1,4 @@
 module Loppy
-include("Loppy/Indexing.jl")
-include("Loppy/Util.jl")
+include("Indexing.jl")
+include("Util.jl")
 end # module Loppy
