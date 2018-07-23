@@ -96,7 +96,7 @@ macro reshape(expr::Expr)
     end
 end
 
-includeall(dir) = for f in readdir(dir) if isfile(dir*"/"*f) && f[end-3:end] == ".jl"
+includeall(dir) = for f in readdir(dir) if isfile(dir*"/"*f) && f[end-2:end] == ".jl"
     include(dir*"/"*f)
 end end
 
