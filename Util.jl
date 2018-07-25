@@ -1,5 +1,5 @@
 module Util
-export julienne, fcat, @try_defconst, @λ, @reshape
+export julienne, fcat, @try_defconst, @λ, @reshape, batch, includeall
 
 julienne(args...; view=true) = view ? _julienne_view(args...) : _julienne_copy(args...)
 
@@ -99,5 +99,17 @@ end
 includeall(dir) = for f in readdir(dir) if isfile(dir*"/"*f) && f[end-2:end] == ".jl"
     include(dir*"/"*f)
 end end
+
+function batch(xs, sz; dim=-1) where N
+    dim = ndims(xs) + dim + 1
+
+    s = size(xs, dim)
+    ret = []
+    for i in 1:div(s, sz)
+        push!(ret, slicedim(xs, dim, 1+(i-1)*sz:min(s, i*sz)))
+    end
+
+    ret
+end
 
 end # module Util
