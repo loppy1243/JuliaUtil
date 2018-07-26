@@ -100,7 +100,7 @@ includeall(dir) = for f in readdir(dir) if isfile(dir*"/"*f) && f[end-2:end] == 
     include(dir*"/"*f)
 end end
 
-function batch(xs, sz; dim=-1) where N
+function batch(xs, sz; dim=-1)
     dim = ndims(xs) + dim + 1
 
     s = size(xs, dim)
