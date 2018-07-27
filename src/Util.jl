@@ -1,5 +1,5 @@
 module Util
-export julienne, fcat, @try_defconst, @λ, @reshape, batch, includeall
+export julienne, fcat, @try_defconst, @λ, @reshape, batch, includeall, fbinom, bernoulli
 
 julienne(args...; view=true) = view ? _julienne_view(args...) : _julienne_copy(args...)
 
@@ -111,5 +111,15 @@ function batch(xs, sz; dim=-1)
 
     ret
 end
+
+function fbinom(m, n)
+    m = Float64(m)
+    n = Float64(n)
+
+    factorial(m)/(factorial(n)*factorial(m-n))
+end
+bernoulli(::Type{Float64}, n) = sum((-1)^k*fbinom(j, k)*k^n/(j+1) for j=0:n for k=0:j)
+bernoulli(::Type{Int}, n) = sum((-1)^k*binomial(j, k)*k^n/(j+1) for j=0:n for k=0:j)
+bernoulli(n) = bernoulli(Int, n)
 
 end # module Util
