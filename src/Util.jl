@@ -125,6 +125,6 @@ bernoulli(n) = bernoulli(Int, n)
 
 cartesian_pow(itr, n) = Iterators.product(fill(itr, n)...)
 @generated cartesian_pow(itr, ::Type{Val{N}}) where N =
-    :(Iterators.product($((itr for _ = 1:N)...)))
+    :(Iterators.product($((:itr for _ = 1:N)...)))
 
 end # module Util
