@@ -1,5 +1,6 @@
 module Util
-export julienne, fcat, @try_defconst, @λ, @reshape, batch, includeall, fbinom, bernoulli
+export julienne, fcat, @try_defconst, @λ, @reshape, batch, includeall, fbinom, bernoulli,
+       cartesian_pow
 
 julienne(args...; view=true) = view ? _julienne_view(args...) : _julienne_copy(args...)
 
@@ -121,5 +122,9 @@ end
 bernoulli(::Type{Float64}, n) = sum((-1)^k*fbinom(j, k)*k^n/(j+1) for j=0:n for k=0:j)
 bernoulli(::Type{Int}, n) = sum((-1)^k*binomial(j, k)*k^n/(j+1) for j=0:n for k=0:j)
 bernoulli(n) = bernoulli(Int, n)
+
+cartesian_pow(itr, n) = Iterators.product(fill(itr, n)...)
+@generated cartesian_pow(itr, ::Type{Val{N}}) where N =
+    :(Iterators.product($((itr for _ = 1:N)...)))
 
 end # module Util
