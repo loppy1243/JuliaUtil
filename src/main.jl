@@ -1,4 +1,3 @@
-module Util
 export julienne, fcat, @try_defconst, @λ, @reshape, batch, includeall, fbinom, bernoulli,
        cartesian_pow
 
@@ -126,5 +125,3 @@ bernoulli(n) = bernoulli(Int, n)
 cartesian_pow(itr, n) = Iterators.product(fill(itr, n)...)
 @generated cartesian_pow(itr, ::Type{Val{N}}) where N =
     :(Iterators.product($((:itr for _ = 1:N)...)))
-
-end # module Util
