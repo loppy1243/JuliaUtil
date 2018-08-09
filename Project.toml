@@ -1,5 +1,5 @@
 authors = ["Nicholas <todoroff@nscl.msu.edu>"]
-name = "Loppy"
+name = "JuliaUtil"
 uuid = "e0285c20-9bfe-11e8-0cca-5f36c2b0fa53"
 version = "0.1.0"
 
