@@ -1,4 +1,4 @@
-module Loppy
+module JuliaUtil
 include("Indexing/main.jl")
 include("Util.jl")
-end # module Loppy
+end # module JuliaUtil
