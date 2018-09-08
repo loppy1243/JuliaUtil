@@ -1,5 +1,5 @@
 export julienne, fcat, @try_defconst, @λ, @reshape, batch, includeall, fbinom, bernoulli,
-       cartesian_pow
+       cartesian_pow, @every
 
 julienne(args...; view=true) = view ? _julienne_view(args...) : _julienne_copy(args...)
 
@@ -125,3 +125,33 @@ bernoulli(n) = bernoulli(Int, n)
 cartesian_pow(itr, n) = Iterators.product(fill(itr, n)...)
 @generated cartesian_pow(itr, ::Type{Val{N}}) where N =
     :(Iterators.product($((:itr for _ = 1:N)...)))
+
+const TIME_DICT = Dict()
+function _every(seconds, init_time, expr)
+    t_prev = gensym()
+    quote
+        ss = $(esc(seconds))
+        TIME_DICT[$(Meta.quot(t_prev))] = get(TIME_DICT, $(Meta.quot(t_prev)), $init_time)
+
+        if time() - TIME_DICT[$(Meta.quot(t_prev))] >= ss
+            $(esc(expr))
+            TIME_DICT[$(Meta.quot(t_prev))] = time()
+        end
+    end
+end
+
+macro every(seconds, sign::Symbol, expr)
+    _every(seconds,
+           if sign === :+
+               0
+           elseif sign === :-
+               :(time())
+           else
+               error("Invalid syntax in @every: expect \":+\" or \":-\", got \"$sign\"")
+           end,
+           expr)
+end
+
+macro every(seconds, expr)
+    _every(seconds, :(time()), expr)
+end
