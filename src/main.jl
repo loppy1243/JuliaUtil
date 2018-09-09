@@ -1,6 +1,6 @@
 export julienne, fcat, @try_defconst, @λ, @reshape, batch, includeall, fbinom, bernoulli,
        cartesian_pow, @every
-using SpecialFunction: factorial
+using SpecialFunctions: factorial
 
 julienne(args...; view=true) = view ? _julienne_view(args...) : _julienne_copy(args...)
 
