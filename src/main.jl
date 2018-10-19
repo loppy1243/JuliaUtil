@@ -10,8 +10,7 @@ function _julienne_view(f, A, dims)
     other_dims = [n for n = 1:nd if !(n in dims)]
     ret = similar(A, other_dims...)
     for ixs in CartesianRange(size(A, other_dims...))
-        jxs = (d in dims ? (:) : ixs[i] #=
-            =# for (i, d) in enumerate(ixs))
+        jxs = (d in dims ? (:) : ixs[i] for (i, d) in enumerate(ixs))
         v = view(A, jxs...)
         ret[ixs] = f(v)
     end
@@ -101,13 +100,26 @@ includeall(dir) = for f in readdir(dir) if isfile(dir*"/"*f) && f[end-2:end] == 
     include(dir*"/"*f)
 end end
 
-function batch(xs, sz; dim=-1)
-    dim = ndims(xs) + dim + 1
+batch(args...; view=true, kws...) = view ? _batch_view(args...; kws...) :
+                                           _batch_copy(args...; kws...)
+function _batch_view(xs, sz; dim=ndims(xs))
+    chunk(i) = selectdim(xs, dim, 1+(i-1)*sz:min(s, i*sz))
 
     s = size(xs, dim)
     ret = []
     for i in 1:div(s, sz)
-        push!(ret, slicedim(xs, dim, 1+(i-1)*sz:min(s, i*sz)))
+        push!(ret, chunk(i))
+    end
+
+    ret
+end
+function _batch_copy(xs, sz; dim=ndims(xs))
+    chunk(i) = selectdim(xs, dim, 1+(i-1)*sz:min(s, i*sz)) |> copy
+
+    s = size(xs, dim)
+    ret = []
+    for i in 1:div(s, sz)
+        push!(ret, chunk(i))
     end
 
     ret
