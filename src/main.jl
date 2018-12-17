@@ -1,5 +1,5 @@
 export julienne, fcat, @try_defconst, @λ, @reshape, batch, includeall, fbinom, bernoulli,
-       cartesian_pow, @every
+       cartesian_pow, @every, base10split, round_prec
 using SpecialFunctions: factorial
 
 julienne(args...; view=true) = view ? _julienne_view(args...) : _julienne_copy(args...)
@@ -138,6 +138,21 @@ bernoulli(n) = bernoulli(Int, n)
 cartesian_pow(itr, n) = Iterators.product(fill(itr, n)...)
 @generated cartesian_pow(itr, ::Type{Val{N}}) where N =
     :(Iterators.product($((:itr for _ = 1:N)...)))
+
+function base10split(x)
+    l = log10(x)
+    expon = floor(l)
+
+    (10^(l-expon), expon)
+end
+
+function roundprec(x, tol)
+    isinf(tol) && return x
+    x_m, x_ex = base10split(x)
+    tol_m, tol_ex = base10split(tol)
+
+    10^x_ex*round(x_m, digits=Int(x_ex-tol_ex+1))
+end
 
 const TIME_DICT = Dict()
 function _every(seconds, init_time, expr)
