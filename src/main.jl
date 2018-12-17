@@ -143,7 +143,7 @@ function base10split(x)
     l = log10(abs(x))
     expon = floor(l)
 
-    (sgn(x)*10^(l-expon), expon)
+    (sign(x)*10^(l-expon), expon)
 end
 
 function roundprec(x, tol)
