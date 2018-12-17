@@ -140,10 +140,10 @@ cartesian_pow(itr, n) = Iterators.product(fill(itr, n)...)
     :(Iterators.product($((:itr for _ = 1:N)...)))
 
 function base10split(x)
-    l = log10(x)
+    l = log10(abs(x))
     expon = floor(l)
 
-    (10^(l-expon), expon)
+    (sgn(x)*10^(l-expon), expon)
 end
 
 function roundprec(x, tol)
